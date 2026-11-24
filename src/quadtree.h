@@ -339,21 +339,38 @@ private:
     // Precondition: currentCell contains query.
     OrdinalDirection aabbQueryQuadrant(const AABB<float>& query,
                                        const AABB<float>& currentCell) const {
+        // where the cell's center lines cross
         sf::Vector2f mid = currentCell.middle();
 
+        // box is fully left of the vertical line
         bool west = query.maxPoint.x <= mid.x;
+
+        // box is fully right of the vertical line
         bool east = query.minPoint.x >= mid.x;
+
+        // box is fully above the horizontal line
         bool north = query.maxPoint.y <= mid.y;
+
+        // box is fully below the horizontal line
         bool south = query.minPoint.y >= mid.y;
 
+        // top-left quadrant
         if (north == true && west == true) {
             return OrdinalDirection::NW;
+
+            // top-right quadrant
         } else if (north == true && east == true) {
             return OrdinalDirection::NE;
+
+            // bottom-left quadrant
         } else if (south == true && west == true) {
             return OrdinalDirection::SW;
+
+            // bottom-right quadrant
         } else if (south == true && east == true) {
             return OrdinalDirection::SE;
+
+            // crosses a center line so it straddles
         } else {
             return OrdinalDirection::INVALID_DIRECTION;
         }
@@ -364,17 +381,22 @@ private:
     // "direction" quadrant
     // Precondition: direction is not INVALID
     void aabbEnter(AABB<float>& bounds, OrdinalDirection direction) const {
+        // get the center before changing any edges
         sf::Vector2f mid = bounds.middle();
 
         if (direction == OrdinalDirection::NW || direction == OrdinalDirection::NE) {
+            // north: keep the top half
             bounds.maxPoint.y = mid.y;
         } else {
+            // south: keep the bottom half
             bounds.minPoint.y = mid.y;
         }
 
         if (direction == OrdinalDirection::NW || direction == OrdinalDirection::SW) {
+            // west: keep the left half
             bounds.maxPoint.x = mid.x;
         } else {
+            // east: keep the right half
             bounds.minPoint.x = mid.x;
         }
     };
