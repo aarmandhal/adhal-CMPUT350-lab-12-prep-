@@ -1,3 +1,18 @@
 a.
+
+Inserting points that get closer to the corner like (0.75, 0.75), (0.375, 0.375), etc, means each split seperates
+only one point, so the tree turn into a long chain like a linked list.  A query box in an empty off-diagonal quadrant
+like [0.6, 0.9] x [0.1, 0.4] finishes in constant time, while a tiny box at the origin will go down the entire chain in O(n).
+
 b.
+
+Each extra copy of the same point causes another split, but every copy lands in the same child, so the tree keeps geeting 
+deeper for nothing until it hits the max depth and then that leaf will grow without limit.  A fix is to skip a split that
+wouldn't seperate the points or store to store duplicates as a single entry with a count.
+
 c.
+
+Quadtree cells are fixed to the world's axes, so translating or rotating the scene changes which cell each object lands in
+and which objects cross center lines, which means the whole tree has to be rebuilt.  Quadtrees work well for static, bounded 
+scenes with uneven density, but poorly for scenes that move as a whole or have a large or fast moving objects, where a BVH is 
+a better fit.
